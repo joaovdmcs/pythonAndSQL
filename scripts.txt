@@ -1,17 +1,21 @@
 #creation & config
 CREATE DATABASE Escola;
 
+
 CREATE TABLE Aluno 
 (idAluno INT NOT NULL AUTO_INCREMENT, 
 PRIMARY KEY (idAluno));
+
 
 CREATE TABLE Curso 
 (idCurso INT NOT NULL AUTO_INCREMENT, 
 PRIMARY KEY (idCurso));
 
+
 CREATE TABLE Nota 
 (idNota INT NOT NULL AUTO_INCREMENT, 
 PRIMARY KEY (idNota));
+
 
 ALTER TABLE Aluno 
 ADD COLUMN Nome VARCHAR(100) NOT NULL AFTER idAluno, 
@@ -21,22 +25,88 @@ ADD COLUMN Cidade VARCHAR(100) NOT NULL AFTER Endere,
 ADD COLUMN Estado VARCHAR(2) NOT NULL AFTER Cidade, 
 ADD COLUMN CPF VARCHAR(11) NOT NULL AFTER Estado;
 
+
 ALTER TABLE Nota 
 ADD COLUMN Atividade VARCHAR(100),  
 ADD COLUMN NotaAtual DECIMAL(5,2) NOT NULL AFTER Atividade;
 
+
 ALTER TABLE Curso 
 ADD Column Nome VARCHAR(100) NOT NULL AFTER IdCurso;
+
 
 #insert
 INSERT INTO Aluno VALUES 
 (DEFAULT, "Andre", "2000-01-01", "Rua ABC", "AAA", "BB", "12345678901");
 
-#select
+
+#select//consultas
 SELECT 
 * 
 FROM Aluno;
 
+
+SELECT 
+Cidade, 
+DDN, 
+CPF 
+FROM Aluno;
+
+
+SELECT 
+Cidade, 
+DDN, 
+CPF 
+FROM Aluno 
+WHERE Cidade = "Campina Grande";
+ 
+SELECT 
+* 
+FROM Aluno 
+ORDER BY DDN;
+
+
+SELECT 
+* 
+FROM Aluno 
+ORDER BY DDN DESC;
+
+
+SELECT Nome,
+DDN,
+Endere 
+FROM Aluno 
+ORDER BY 2 DESC; (utilização do segundo campo da query (DDN))
+
+
+#Em cardinalidades de N para M, é necessaria a criação de uma tabela
+intermediária entre as duas tabelas. (utilização de chaves estrangeiras)
+#No exemplo em Escola, Aluno-Curso precisará de uma tabela auxiliar.
+
+
+#Criação da tabela relacional
+CREATE TABLE Alunos_Cursos 
+(idAlunoCurso INT NOT NULL AUTO_INCREMENT, 
+idAluno INT NOT NULL, idCurso INT NOT NULL,
+ PRIMARY KEY (idAlunoCurso));
+
+#Criação constraint
+ALTER TABLE Alunos_Cursos 
+ADD CONSTRAINT fkIdAluno FOREIGN KEY (idAluno) REFERENCES Aluno (idAluno) 
+ON DELETE NO ACTION 
+ON UPDATE NO ACTION, 
+ADD CONSTRAINT fkIdCurso FOREIGN KEY (idCurso) REFERENCES Curso (idCurso) 
+ON DELETE NO ACTION 
+ON UPDATE NO ACTION;
+ 
+ 
+ALTER TABLE Nota ADD CONSTRAINT fkIdAlunoCurso FOREIGN KEY (idAlunoCurso) REFERENCES Alunos_Cursos (idAlunoCurso) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ 
+#Select avançado 
+SELECT A.Nome, C.nome, N.Atividade, N.NotaAtual
+FROM Aluno A, Curso C, Alunos_Cursos AC, Nota N
+WHERE A.idAluno = AC.idAluno and C.idCurso = AC.idCurso and AC.idAlunoCurso = N.idAlunoCurso;
 
 
 
