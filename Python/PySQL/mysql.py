@@ -23,4 +23,10 @@ def select(fields, tables, where=None):
 	return cur.fetchall() #Tupla.
 
 
-print(select("Nome, CPF", "Aluno"))
+# print(select("Nome, CPF", "Aluno")) READ
+
+
+
+
+
+
